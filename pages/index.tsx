@@ -1,72 +1,450 @@
+import { Button } from 'antd'
 import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import { useState } from 'react'
+import { useWCConnector } from 'walletconnect-cc-provider'
+import SwitchNetwork from '../components/switchNetwork'
+import { apiGetAccountNonce, apiGetGasPrices } from '../utils/api'
+import {convertAmountToRawNumber, convertStringToHex } from '../utils/bignumber'
+import { eip712 } from '../utils/eip712'
+import {hashMessage, hashTypedDataMessage, sanitizeHex, verifySignature } from '../utils/utilities'
+import {convertUtf8ToHex} from '@walletconnect/utils'
 
 const Home: NextPage = () => {
+  const {connect, evmAddress, chainId, connector, aptosAddress, chain, updateConnector} = useWCConnector()
+  const [result, setResult] = useState<any>(null)
+
+  const testSendTransaction = async () => {
+    if (!connector) {
+      return;
+    }
+
+    const from = evmAddress;
+
+    // to
+    const to = evmAddress;
+
+    // nonce
+    const _nonce = await apiGetAccountNonce(evmAddress, chainId);
+    const nonce = sanitizeHex(convertStringToHex(_nonce));
+
+    // gasPrice
+    const gasPrices = await apiGetGasPrices();
+    const _gasPrice = gasPrices.slow.price;
+    const gasPrice = sanitizeHex(convertStringToHex(convertAmountToRawNumber(_gasPrice, 9)));
+
+    // gasLimit
+    const _gasLimit = 21000;
+    const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
+
+    // value
+    const _value = 0;
+    const value = sanitizeHex(convertStringToHex(_value));
+
+    // data
+    const data = "0x";
+
+    // test transaction
+    const tx = {
+      from,
+      to,
+      nonce,
+      gasPrice,
+      gasLimit,
+      value,
+      data,
+    };
+
+    try {
+      const result = await connector.sendTransaction(tx);
+
+      // format displayed result
+      const formattedResult = {
+        method: "eth_sendTransaction",
+        txHash: result,
+        from: evmAddress,
+        to: evmAddress,
+        value: `${_value} ETH`,
+      };
+
+      setResult(formattedResult)
+      // updateConnector(connector)
+    } catch (error) {
+      console.error(error);
+      // updateConnector(connector)
+      setResult(null)
+    }
+  };
+
+  const testSignTransaction = async () => {
+    if (!connector) {
+      return;
+    }
+
+    // from
+    const from = evmAddress;
+
+    // to
+    const to = evmAddress;
+
+    // nonce
+    const _nonce = await apiGetAccountNonce(evmAddress, chainId);
+    const nonce = sanitizeHex(convertStringToHex(_nonce));
+
+    // gasPrice
+    const gasPrices = await apiGetGasPrices();
+    const _gasPrice = gasPrices.slow.price;
+    const gasPrice = sanitizeHex(convertStringToHex(convertAmountToRawNumber(_gasPrice, 9)));
+
+    // gasLimit
+    const _gasLimit = 21000;
+    const gasLimit = sanitizeHex(convertStringToHex(_gasLimit));
+
+    // value
+    const _value = 0;
+    const value = sanitizeHex(convertStringToHex(_value));
+
+    // data
+    const data = "0x";
+
+    // test transaction
+    const tx = {
+      from,
+      to,
+      nonce,
+      gasPrice,
+      gasLimit,
+      value,
+      data,
+    };
+
+    try {
+      // send transaction
+      const result = await connector.signTransaction(tx);
+
+      // format displayed result
+      const formattedResult = {
+        method: "eth_signTransaction",
+        from: evmAddress,
+        to: evmAddress,
+        value: `${_value} ETH`,
+        result,
+      };
+
+      // display result
+
+      // updateConnector(connector)
+      setResult(formattedResult)
+    } catch (error) {
+      console.error(error);
+      // updateConnector(connector)
+      setResult(null)
+    }
+  };
+
+  const testSignTypedData = async () => {
+    if (!connector) {
+      return;
+    }
+
+    const message = JSON.stringify(eip712.example);
+
+    // eth_signTypedData params
+    const msgParams = [evmAddress, message];
+
+    try {
+      // sign typed data
+      const result = await connector.signTypedData(msgParams);
+
+      // verify signature
+      const hash = hashTypedDataMessage(message);
+      const valid = await verifySignature(evmAddress, result, hash, chainId);
+
+      // format displayed result
+      const formattedResult = {
+        method: "eth_signTypedData",
+        evmAddress,
+        valid,
+        result,
+      };
+
+      // updateConnector(connector)
+      setResult(formattedResult)
+
+    } catch (error) {
+      console.error(error);
+      // updateConnector(connector)
+      setResult(null)
+    }
+  };
+
+  const testLegacySignMessage = async () => {
+    if (!connector) {
+      return;
+    }
+
+    // test message
+    const message = `My email is john@doe.com - ${new Date().toUTCString()}`;
+
+    // hash message
+    const hash = hashMessage(message);
+
+    // eth_sign params
+    const msgParams = [evmAddress, hash];
+
+    try {
+      const result = await connector.signMessage(msgParams);
+
+      // verify signature
+      const valid = await verifySignature(evmAddress, result, hash, chainId);
+
+      // format displayed result
+      const formattedResult = {
+        method: "eth_sign (legacy)",
+        evmAddress,
+        valid,
+        result,
+      };
+      console.log('result', result)
+
+      // display result
+      setResult(formattedResult)
+      // updateConnector(connector)
+    } catch (error) {
+      console.error(error);
+      // updateConnector(connector)
+      setResult(null)
+    }
+  };
+
+  const testStandardSignMessage = async () => {
+    if (!connector) {
+      return;
+    }
+
+    // test message
+    const message = `My email is john@doe.com - ${new Date().toUTCString()}`;
+
+    // encode message (hex)
+    const hexMsg = convertUtf8ToHex(message);
+
+    // eth_sign params
+    const msgParams = [evmAddress, hexMsg];
+
+    try {
+      // send message
+      const result = await connector.signMessage(msgParams);
+
+      // verify signature
+      const hash = hashMessage(message);
+      const valid = await verifySignature(evmAddress, result, hash, chainId);
+
+      // format displayed result
+      const formattedResult = {
+        method: "eth_sign (standard)",
+        evmAddress,
+        valid,
+        result,
+      };
+
+      // display result
+      setResult(formattedResult)
+      // updateConnector(connector)
+    } catch (error) {
+      console.error(error);
+      setResult(null)
+      // updateConnector(connector)
+    }
+  };
+
+  const testPersonalSignMessage = async () => {
+    if (!connector) {
+      return;
+    }
+
+    // test message
+    const message = `My email is john@doe.com - ${new Date().toUTCString()}`;
+
+    // encode message (hex)
+    const hexMsg = convertUtf8ToHex(message);
+
+    // eth_sign params
+    const msgParams = [hexMsg, evmAddress];
+
+    try {
+      const result = await connector.signPersonalMessage(msgParams);
+
+      // verify signature
+      const hash = hashMessage(message);
+      const valid = await verifySignature(evmAddress, result, hash, chainId);
+
+      // format displayed result
+      const formattedResult = {
+        method: "personal_sign",
+        evmAddress,
+        valid,
+        result,
+      };
+
+      setResult(formattedResult)
+      // updateConnector(connector)
+
+    } catch (error) {
+      console.error(error);
+      setResult(null)
+      // updateConnector(connector)
+    }
+  };
+
+  const testAptosSignMessage = async () => {
+    if (!connector) {
+      return
+    }
+
+    const messageData = [
+      {
+        address: true,
+        application: true,
+        chainId: true,
+        message:
+          'Click to sign in and accept the Move China Terms of Service. This request will not cost any gas fees.',
+        nonce: Math.floor(Math.random() * 10000),
+      },
+    ]
+
+    try {
+      const result = await connector.signAptosMessage(messageData)
+
+      const formattedResult = {
+        method: 'aptos_sign',
+        aptosAddress,
+        valid: true,
+        result,
+      }
+
+      updateConnector(connector)
+      setResult(formattedResult)
+    } catch (error) {
+      console.error(error)
+      // updateConnector(connector)
+      setResult(null)
+    }
+  }
+
+  const testAptosSignTransaction = async () => {
+    if (!connector) {
+      return
+    }
+
+    const txPayload = [
+      {
+        function: '0x1::coin::transfer',
+        type_arguments: ['0x1::aptos_coin::AptosCoin'],
+        arguments: ['0xeb442855143ce3e26babc6152ad98e9da7db7f0820f08be3d006535b663a6292', '1000'],
+      },
+    ]
+
+    try {
+      const result = await connector.signAptosTransaction(txPayload)
+      const formattedResult = {
+        method: 'aptos_signTransaction',
+        aptosAddress,
+        valid: true,
+        result,
+      }
+
+      // updateConnector(connector)
+      setResult(formattedResult)
+    } catch (error) {
+      console.error(error)
+      // updateConnector(connector)
+      setResult(null)
+    }
+  }
+
+  const testAptosSignAndSendTransaction = async () => {
+    if (!connector) {
+      return
+    }
+
+    const txPayload = [
+      {
+        function: '0x1::coin::transfer',
+        type_arguments: ['0x1::aptos_coin::AptosCoin'],
+        arguments: ['0xeb442855143ce3e26babc6152ad98e9da7db7f0820f08be3d006535b663a6292', '1000'],
+      },
+    ]
+
+    try {
+      const result = await connector.sendAptosTransaction(txPayload)
+      const formattedResult = {
+        method: 'aptos_sendTransaction',
+        aptosAddress,
+        valid: true,
+        result,
+      }
+
+      // updateConnector(connector)
+      setResult(formattedResult)
+    } catch (error) {
+      console.error(error)
+      // updateConnector(connector)
+      setResult(null)
+    }
+  }
+
+  const disconnect = () => {
+    if (connector) {
+      connector.killSession()
+    }
+  }
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <meta name="description" content="Generated by create next app" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <div style={{ padding: '20px'}}>
+      <Button onClick={connect}>connect</Button>
+      <Button onClick={disconnect}>disconnect</Button>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.tsx</code>
+      <p>evmAddress: {evmAddress}</p>
+      <p>aptosAddress: {aptosAddress}</p>
+      <p>currentChain: {chain ? chain : chainId}</p>
+      <p>chainId: {chainId && chainId}</p>
+      <p>chain: {connector?.chain}</p>
+      <div>
+        <h2>evm transaction</h2>
+          <Button onClick={testSendTransaction}>{'eth_sendTransaction'}</Button>
+          <Button onClick={testSignTransaction}>{'eth_signTransaction'}</Button>
+          <Button onClick={testSignTypedData}>{'eth_signTypedData'}</Button>
+          <Button onClick={testLegacySignMessage}>{'eth_sign (legacy)'}</Button>
+          <Button onClick={testStandardSignMessage}>{'eth_sign (standard)'}</Button>
+          <Button onClick={testPersonalSignMessage}>{'personal_sign'}</Button>
+      </div>
+      <div>
+        <h2>aptos transaction</h2>
+        <p>
+          <Button onClick={testAptosSignMessage}>{'aptos_sign'}</Button>
         </p>
+        <p>
+          <Button onClick={testAptosSignTransaction}>{'aptos_signTransaction'}</Button>
+        </p>
+        <p>
+          <Button onClick={testAptosSignAndSendTransaction}>{'aptos_sendTransaction'}</Button>
+        </p>
+      </div>
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+      <div>
+        <h2>Result:</h2>
+        {result &&
+        Object.keys(result).map(k => (
+          <p key={k}>
+            <span>{k}：</span>
+            <span>{result[k].toString()}</span>
+          </p>
+        ))}
+      </div>
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
+      <SwitchNetwork />
 
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
     </div>
   )
 }
 
 export default Home
+
