@@ -307,7 +307,7 @@ const Home: NextPage = () => {
         chainId: true,
         message:
           'Click to sign in and accept the Move China Terms of Service. This request will not cost any gas fees.',
-        nonce: Math.floor(Math.random() * 10000),
+        nonce: Math.floor(Math.random() * 10000).toString(),
       },
     ]
 
