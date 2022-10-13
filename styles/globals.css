@@ -24,3 +24,6 @@ a {
     background: black;
   }
 }
+.ant-btn {
+  margin-right: 12px;
+}

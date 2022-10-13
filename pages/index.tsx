@@ -418,19 +418,13 @@ const Home: NextPage = () => {
       </div>
       <div>
         <h2>aptos transaction</h2>
-        <p>
-          <Button onClick={testAptosSignMessage}>{'aptos_sign'}</Button>
-        </p>
-        <p>
-          <Button onClick={testAptosSignTransaction}>{'aptos_signTransaction'}</Button>
-        </p>
-        <p>
-          <Button onClick={testAptosSignAndSendTransaction}>{'aptos_sendTransaction'}</Button>
-        </p>
+        <Button onClick={testAptosSignMessage}>{'aptos_sign'}</Button>
+        <Button onClick={testAptosSignTransaction}>{'aptos_signTransaction'}</Button>
+        <Button onClick={testAptosSignAndSendTransaction}>{'aptos_sendTransaction'}</Button>
       </div>
 
       <div>
-        <h2>Result:</h2>
+        <h2>Result</h2>
         {result &&
         Object.keys(result).map(k => (
           <p key={k}>
@@ -440,6 +434,7 @@ const Home: NextPage = () => {
         ))}
       </div>
 
+      <h2>network</h2>
       <SwitchNetwork />
 
     </div>
