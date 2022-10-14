@@ -8,6 +8,7 @@ import {convertAmountToRawNumber, convertStringToHex } from '../utils/bignumber'
 import { eip712 } from '../utils/eip712'
 import {hashMessage, hashTypedDataMessage, sanitizeHex, verifySignature } from '../utils/utilities'
 import {convertUtf8ToHex} from '@walletconnect/utils'
+import {hexToAscII} from '../utils/HexToAscII'
 
 const Home: NextPage = () => {
   const {connect, evmAddress, chainId, connector, aptosAddress, chain, updateConnector} = useWCConnector()
@@ -286,12 +287,12 @@ const Home: NextPage = () => {
       };
 
       setResult(formattedResult)
-      // updateConnector(connector)
+      updateConnector(connector)
 
     } catch (error) {
       console.error(error);
       setResult(null)
-      // updateConnector(connector)
+      updateConnector(connector)
     }
   };
 
@@ -318,14 +319,14 @@ const Home: NextPage = () => {
         method: 'aptos_sign',
         aptosAddress,
         valid: true,
-        result,
+        result: hexToAscII(result),
       }
 
       updateConnector(connector)
       setResult(formattedResult)
     } catch (error) {
       console.error(error)
-      // updateConnector(connector)
+      updateConnector(connector)
       setResult(null)
     }
   }
@@ -349,14 +350,14 @@ const Home: NextPage = () => {
         method: 'aptos_signTransaction',
         aptosAddress,
         valid: true,
-        result,
+        result: hexToAscII(result),
       }
 
-      // updateConnector(connector)
+      updateConnector(connector)
       setResult(formattedResult)
     } catch (error) {
       console.error(error)
-      // updateConnector(connector)
+      updateConnector(connector)
       setResult(null)
     }
   }
@@ -383,11 +384,11 @@ const Home: NextPage = () => {
         result,
       }
 
-      // updateConnector(connector)
+      updateConnector(connector)
       setResult(formattedResult)
     } catch (error) {
       console.error(error)
-      // updateConnector(connector)
+      updateConnector(connector)
       setResult(null)
     }
   }
@@ -429,7 +430,7 @@ const Home: NextPage = () => {
         Object.keys(result).map(k => (
           <p key={k}>
             <span>{k}：</span>
-            <span>{result[k].toString()}</span>
+            <span>{JSON.stringify(result[k])}</span>
           </p>
         ))}
       </div>
