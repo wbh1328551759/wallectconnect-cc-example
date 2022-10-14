@@ -29,7 +29,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "wagmi": "^0.6.8",
-    "walletconnect-cc-provider": "^0.0.12",
+    "walletconnect-cc-provider": "^0.1.0",
     "walletconnect-cc-qrcode": "^0.0.2"
   },
   "devDependencies": {

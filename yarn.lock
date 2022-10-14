@@ -4328,31 +4328,31 @@ wagmi@^0.6.8:
     "@walletconnect/ethereum-provider" "^1.7.8"
     use-sync-external-store "^1.2.0"
 
-walletconnect-cc-base@^0.0.7:
-  version "0.0.7"
-  resolved "https://registry.npmjs.org/walletconnect-cc-base/-/walletconnect-cc-base-0.0.7.tgz#59d872732ae9100a28f12b07cdc422115188f4fe"
-  integrity sha512-5VUwRobqSUtSnRH3BbVoAvr2rViyYA8IzSBG7QZghiR1soNq7mtAjUz+VXMPzjZFeVkUcKMsGtcyv26tAE2Qjw==
+walletconnect-cc-base@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.npmjs.org/walletconnect-cc-base/-/walletconnect-cc-base-0.1.0.tgz#fe58dcb4e45895a72dc7da9eae12ba99f1c78c80"
+  integrity sha512-xJXf+0NP9BXxYTT4GA4HSE7tjz5JLGdXrQxCWeAx4VqCU1IF9qUcPvhrry4dLqat3+hC+k9pQJ1rqT8ZLgj/UQ==
   dependencies:
     "@walletconnect/socket-transport" "^1.8.0"
     "@walletconnect/types" "^1.8.0"
     "@walletconnect/utils" "^1.8.0"
 
-walletconnect-cc-client@^0.0.7:
-  version "0.0.7"
-  resolved "https://registry.npmjs.org/walletconnect-cc-client/-/walletconnect-cc-client-0.0.7.tgz#0bbcfbf6f72f4cae5d3f9e02779d010a4932d06a"
-  integrity sha512-hxUf8/1rSOTrCea7rk8zDVl0ZgrpMZKtj4C7KMFswv5WABIdQfeTzvOpjmrhIoHOTl6MbsdOYNeFvSIdiqMTwQ==
+walletconnect-cc-client@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.npmjs.org/walletconnect-cc-client/-/walletconnect-cc-client-0.1.0.tgz#9cfd41b8dd87ba86308666b6862ce7f0aac08b94"
+  integrity sha512-JL8fH4GTDdW2x0YpwmLtzd3JaRfhh8VktJpjKq0SAFGiNIA7f4ZVfDUSAo95mxievhPiy5SWUTkz5iH+p7n0Uw==
   dependencies:
     "@walletconnect/iso-crypto" "^1.8.0"
     "@walletconnect/types" "^1.8.0"
     "@walletconnect/utils" "^1.8.0"
-    walletconnect-cc-base "^0.0.7"
+    walletconnect-cc-base "^0.1.0"
 
-walletconnect-cc-provider@^0.0.12:
-  version "0.0.12"
-  resolved "https://registry.npmjs.org/walletconnect-cc-provider/-/walletconnect-cc-provider-0.0.12.tgz#add4d2242cbc7099e776f1ad498a556aac8d3093"
-  integrity sha512-NFdUfEw7fJsh0ZuxlPGYUW2WTzeNcdObKhsjD+oRskpPkovQ1TQVr3NoWqt43VM7WSlmZvKq0QUZYwSoH7vgKA==
+walletconnect-cc-provider@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.npmjs.org/walletconnect-cc-provider/-/walletconnect-cc-provider-0.1.0.tgz#013e9bcd30e1935deaca0f8fce38ff08cd9b24c6"
+  integrity sha512-ZjQWJbSOsQFr0BzkTIEvTePNMAVciKncPuQHc0JoXCjtkXofckCjZiiXYDaBr2Mhb1nNxI2npvJqTSulEkd6Bw==
   dependencies:
-    walletconnect-cc-client "^0.0.7"
+    walletconnect-cc-client "^0.1.0"
     walletconnect-cc-qrcode "^0.0.2"
 
 walletconnect-cc-qrcode@^0.0.2:

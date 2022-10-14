@@ -407,7 +407,7 @@ const Home: NextPage = () => {
       <p>aptosAddress: {aptosAddress}</p>
       <p>currentChain: {chain ? chain : chainId}</p>
       <p>chainId: {chainId && chainId}</p>
-      <p>chain: {connector?.chain}</p>
+      <p>chain: {chain}</p>
       <div>
         <h2>evm transaction</h2>
           <Button onClick={testSendTransaction}>{'eth_sendTransaction'}</Button>
