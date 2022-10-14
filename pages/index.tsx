@@ -8,7 +8,7 @@ import {convertAmountToRawNumber, convertStringToHex } from '../utils/bignumber'
 import { eip712 } from '../utils/eip712'
 import {hashMessage, hashTypedDataMessage, sanitizeHex, verifySignature } from '../utils/utilities'
 import {convertUtf8ToHex} from '@walletconnect/utils'
-import {hexToAscII} from '../utils/HexToAscII'
+import {hexToAscII} from '../utils/hexToAscII'
 
 const Home: NextPage = () => {
   const {connect, evmAddress, chainId, connector, aptosAddress, chain, updateConnector} = useWCConnector()
