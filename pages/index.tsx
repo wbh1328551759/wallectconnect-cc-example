@@ -307,7 +307,7 @@ const Home: NextPage = () => {
         chainId: true,
         message:
           'Click to sign in and accept the Move China Terms of Service. This request will not cost any gas fees.',
-        nonce: Math.floor(Math.random() * 10000).toString(),
+        nonce: Math.floor(Math.random() * 10000),
       },
     ]
 
@@ -339,7 +339,7 @@ const Home: NextPage = () => {
       {
         function: '0x1::coin::transfer',
         type_arguments: ['0x1::aptos_coin::AptosCoin'],
-        arguments: ['0xeb442855143ce3e26babc6152ad98e9da7db7f0820f08be3d006535b663a6292', '1000'],
+        arguments: ['0x9f56815bc91fdd440af0ec0adc0acc17b27c61e102a69f1d15f0c8cd035fba33', '10'],
       },
     ]
 
@@ -370,7 +370,7 @@ const Home: NextPage = () => {
       {
         function: '0x1::coin::transfer',
         type_arguments: ['0x1::aptos_coin::AptosCoin'],
-        arguments: ['0xeb442855143ce3e26babc6152ad98e9da7db7f0820f08be3d006535b663a6292', '1000'],
+        arguments: ['0x9f56815bc91fdd440af0ec0adc0acc17b27c61e102a69f1d15f0c8cd035fba33', '10'],
       },
     ]
 
